@@ -40,7 +40,7 @@ public class WebsocketChatEventListener {
         StompHeaderAccessor headerAccessor= StompHeaderAccessor.wrap(event.getMessage());
         String username=(String)headerAccessor.getSessionAttributes().get("username");
         if(username != null) {
-            NotificationMessage chatMessage = new NotificationMessage(username,"Leave",NotificationType.SIMPLE_MESSAGE);
+            NotificationMessage chatMessage = new NotificationMessage(username,"Closed the session!",NotificationType.SIMPLE_MESSAGE);
             messagingTemplate.convertAndSend("/queue/sbamqpapp.queue", chatMessage);
         }
     }
