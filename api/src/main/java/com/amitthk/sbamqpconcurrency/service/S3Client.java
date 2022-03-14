@@ -39,15 +39,14 @@ public class S3Client {
         System.setProperty(SDKGlobalConfiguration.DISABLE_CERT_CHECKING_SYSTEM_PROPERTY,"true");
         if (this.bucketTypeToUse== BucketType.KeyAccess){
             BasicAWSCredentials s3creds = new BasicAWSCredentials(this.customBucketAccessKey,this.customBucketKeySecret);
-            System.out.println(this.customBucketAccessKey + this.customBucketKeySecret);
             ClientConfiguration cc = new ClientConfiguration();
-            //cc.setNonProxyHosts("*");//String.join("|",envNoProxy.split(",")));
+            cc.setNonProxyHosts("*");//String.join("|",envNoProxy.split(",")));
             //cc.setProtocol(Protocol.HTTPS);
-
-            //AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(this.customBucketEndpoint, clientRegion.getName());
+//
+            AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(this.customBucketEndpoint, clientRegion.getName());
             AWSStaticCredentialsProvider provider = new AWSStaticCredentialsProvider(s3creds);
             client = AmazonS3ClientBuilder.standard().withClientConfiguration(cc)
-//                    .withEndpointConfiguration(endpointConfiguration)
+                    .withEndpointConfiguration(endpointConfiguration)
                     .withCredentials(provider)
                     .build();
         }else{
