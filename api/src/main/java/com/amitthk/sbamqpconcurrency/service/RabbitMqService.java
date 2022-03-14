@@ -1,5 +1,6 @@
 package com.amitthk.sbamqpconcurrency.service;
 
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amitthk.sbamqpconcurrency.model.NotificationMessage;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,7 @@ public class RabbitMqService {
     private String routingkey;
     String kafkaTopic = "sb_amqp_concurrency_topic";
 
-    public void send(NotificationMessage company) {
-        amqpTemplate.convertAndSend(exchange, routingkey, company);
-        System.out.println("Send msg = " + company);
+    public void send(S3ObjectSummary s3ObjectSummary) {
+        amqpTemplate.convertAndSend(exchange, routingkey, s3ObjectSummary);
     }
 }
