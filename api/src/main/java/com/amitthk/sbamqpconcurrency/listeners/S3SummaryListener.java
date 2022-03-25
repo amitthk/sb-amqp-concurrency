@@ -1,6 +1,9 @@
 package com.amitthk.sbamqpconcurrency.listeners;
 
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amitthk.sbamqpconcurrency.service.S3SessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -11,8 +14,9 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 @Component
-public class S3InfoListener {
-        private static final String POLISH_PHONE_PREFIX = "+48";
+public class S3SummaryListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(S3SummaryListener.class);
 
     @Value("${app.rabbitmq.exchange}")
     private String exchange;
@@ -23,14 +27,14 @@ public class S3InfoListener {
     @Value("${app.rabbitmq.queue}")
     private String queue;
 
-        @RabbitListener(bindings = @QueueBinding(value = @Queue("sbamqpapp.queue"), exchange = @Exchange(value = "sbamqpapp.exchange"), key = "sbamqpapp.routingkey"))
-        public void receiveMessage(final Message<S3ObjectSummary> message) {
-            S3ObjectSummary parseS3ObjectSummary = parseS3ObjectSummary(message.getPayload());
-            String output = String.format("Bucket path %s size %s!",
-                    parseS3ObjectSummary.getKey(),parseS3ObjectSummary.getSize());
-            // Print to standard output
-            System.out.println(output);
-        }
+    @RabbitListener(bindings = @QueueBinding(value = @Queue("sbamqpapp.queue"), exchange = @Exchange(value = "sbamqpapp.exchange"), key = "sbamqpapp.routingkey"))
+    public void receiveMessage(final Message<S3ObjectSummary> message) {
+        S3ObjectSummary parseS3ObjectSummary = parseS3ObjectSummary(message.getPayload());
+        String output = String.format("Bucket path %s size %s!",
+                parseS3ObjectSummary.getKey(),parseS3ObjectSummary.getSize());
+        // Print to standard output
+        logger.info(output);
+    }
 
     private S3ObjectSummary parseS3ObjectSummary(S3ObjectSummary payload) {
         S3ObjectSummary summary= new S3ObjectSummary();
